@@ -17,9 +17,8 @@
 - Drizzle
 - Vercel
 
-##### You can run this project after clone it by the following command:
 
-Don't forgot replace `.env.example` with your `.env` file
+Don't forget to replace `.env.example` with your `.env` file. You can run this project after cloning it with the following command:
 
 ```bash
 npm install
