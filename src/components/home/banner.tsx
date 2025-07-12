@@ -8,7 +8,7 @@ export default function Banner() {
   const t = useTranslations();
 
   return (
-    <div className="bg-black text-white p-12 md:p-16 flex flex-col md:flex-row md:items-center justify-between gap-8">
+    <div className="bg-black text-white py-12 px-8 md:p-16 flex flex-col md:flex-row md:items-center justify-between gap-8">
       {/* Text Content */}
       <div className="">
         <p className="text-main font-semibold mb-4">{t("categories")}</p>

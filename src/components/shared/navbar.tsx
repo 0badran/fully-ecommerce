@@ -1,12 +1,14 @@
 "use client";
 import { cn } from "@/lib/utils";
-import { Heart, Search, ShoppingCart, UserRound } from "lucide-react";
+import { Heart, Search, ShoppingCart } from "lucide-react";
+import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import LocaleTrigger from "./locale-trigger";
-import { useTranslations } from "next-intl";
 import { Input } from "../ui/input";
+import LocaleTrigger from "./locale-trigger";
 import NavbarSheet from "./navbar-sheet";
+import ProfileDropdown from "./profile-dropdown";
+import ShopNow from "./shop-now";
 const links = [
   { title: "home", href: "/" },
   { title: "contact", href: "/contact" },
@@ -21,11 +23,11 @@ export default function Navbar() {
     <nav className="border-b border-black/30">
       <div className="bg-black text-white p-2">
         <div className="container flex items-center">
-          <div className="justify-self-center w-full line-clamp-1 text-center">
-            <span>{t("headOffer")}</span>
-            <Link href={"#"} className="text-white underline ml-2 font-medium">
-              {t("shopNow")}
-            </Link>
+          <div className="justify-center flex flex-1 gap-2 text-center">
+            <p className="line-clamp-1">{t("headOffer")}</p>
+            <div className="hidden md:block">
+              <ShopNow href="#" />
+            </div>
           </div>
           <LocaleTrigger />
         </div>
@@ -60,7 +62,7 @@ export default function Navbar() {
           </search>
           <Heart />
           <ShoppingCart />
-          <UserRound />
+          <ProfileDropdown />
         </div>
         {/* End Desktop Nav */}
 

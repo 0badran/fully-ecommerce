@@ -13,6 +13,7 @@ import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { Input } from "../ui/input";
+import ProfileDropdown from "./profile-dropdown";
 
 interface Props {
   links: { title: string; href: string }[];
@@ -45,7 +46,7 @@ export default function NavbarSheet({ links, isLinkActive }: Props) {
         <div className="flex justify-around items-center gap-4">
           <Heart />
           <ShoppingCart />
-          <UserRound />
+          <ProfileDropdown />
         </div>
 
         <search className="relative">
