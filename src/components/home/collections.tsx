@@ -41,7 +41,11 @@ export default function Collections() {
               </p>
               <ShopNow href="#" />
             </div>
-            <Image src={woman} alt={t("womenCollection")} />
+            <Image
+              src={woman}
+              alt={t("womenCollection")}
+              className="rtl:scale-x-[-1]"
+            />
           </div>
 
           <div className="flex gap-4">

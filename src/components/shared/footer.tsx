@@ -34,7 +34,7 @@ export default function Footer() {
             />
             <button
               type="submit"
-              className="px-3 sm:px-4 py-2 hover:bg-main cursor-pointer transition"
+              className="px-3 sm:px-4 py-2 rtl:scale-x-[-1] hover:bg-main cursor-pointer transition"
             >
               <SendHorizontal className="size-4 sm:size-auto" />
             </button>
