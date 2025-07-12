@@ -1,28 +1,26 @@
 "use client";
 import { useDotButton } from "@/hooks/use-dot-button";
 import { cn, dirHelper } from "@/lib/utils";
-import { ArrowRight } from "lucide-react";
-import { useLocale, useTranslations } from "next-intl";
+import Autoplay from "embla-carousel-autoplay";
+import { useLocale } from "next-intl";
 import Image from "next/image";
-import Link from "next/link";
 import iphoneIcon from "public/iphone-icon.png";
 import iphone from "public/iphone.png";
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import CategoriesMenu from "../shared/categories-menu";
+import ShopNow from "../shared/shop-now";
 import {
   Carousel,
   CarouselApi,
   CarouselContent,
   CarouselItem,
 } from "../ui/carousel";
-import Autoplay from "embla-carousel-autoplay";
-import CategoriesMenu from "../shared/categories-menu";
+import { ArrowRight } from "lucide-react";
 
 export default function Hero() {
   const locale = useLocale();
   const [api, setApi] = useState<CarouselApi>();
   const { scrollSnaps, selectedIndex, onDotButtonClick } = useDotButton(api);
-  const t = useTranslations();
-  useEffect(() => {}, [selectedIndex]);
 
   return (
     <section className="md:grid grid-cols-12 gap-12">
@@ -32,7 +30,7 @@ export default function Hero() {
       <Carousel
         opts={{
           loop: true,
-          direction: dirHelper(locale) as "rtl",
+          direction: dirHelper(locale),
         }}
         plugins={[Autoplay()]}
         className="bg-black text-white px-2 md:px-0 pt-6 md:pt-10 pb-4 md:pb-6 col-span-9 mt-5 md:mt-10"
@@ -53,12 +51,7 @@ export default function Hero() {
                 <h1 className="text-2xl md:text-5xl max-w-[295px] font-semibold">
                   Up to 10% off Voucher
                 </h1>
-                <Link href={"#"} className="text-white flex gap-4 font-medium">
-                  <span className="underline underline-offset-6 font-medium">
-                    {t("shopNow")}
-                  </span>
-                  <ArrowRight />
-                </Link>
+                <ShopNow href="#" Icon={ArrowRight} />
               </div>
               <Image
                 src={iphone}

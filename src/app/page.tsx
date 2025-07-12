@@ -1,7 +1,9 @@
 import Banner from "@/components/home/banner";
+import Collections from "@/components/home/collections";
 import FlashSales from "@/components/home/flash-sales";
 import Hero from "@/components/home/hero";
 import OurProducts from "@/components/home/our-products";
+import Services from "@/components/home/services";
 import BestSelling from "@/components/shared/best-selling";
 import CategoriesList from "@/components/shared/categories-list";
 
@@ -16,6 +18,8 @@ export default function Home() {
       <BestSelling />
       <Banner />
       <OurProducts />
+      <Collections />
+      <Services />
     </main>
   );
 }

@@ -51,7 +51,7 @@ export const usePrevNextButtons = (
         className={className}
         onClick={onPrevButtonClick}
       >
-        <ArrowLeft className="mx-auto size-4 lg:size-auto" />
+        <ArrowLeft className="mx-auto size-4 lg:size-auto rtl:rotate-180" />
       </button>
     ),
     NextButton: (
@@ -60,7 +60,7 @@ export const usePrevNextButtons = (
         className={className}
         onClick={onNextButtonClick}
       >
-        <ArrowRight className="mx-auto size-4 lg:size-auto" />
+        <ArrowRight className="mx-auto size-4 lg:size-auto rtl:rotate-180" />
       </button>
     ),
   };
