@@ -9,6 +9,8 @@ import LocaleTrigger from "./locale-trigger";
 import NavbarSheet from "./navbar-sheet";
 import ProfileDropdown from "./profile-dropdown";
 import ShopNow from "./shop-now";
+import logo from "public/logo.png";
+import Image from "next/image";
 const links = [
   { title: "home", href: "/" },
   { title: "contact", href: "/contact" },
@@ -33,7 +35,9 @@ export default function Navbar() {
         </div>
       </div>
       <div className="container flex justify-between items-center mt-7 lg:mt-12 mb-4">
-        <div className="text-lg sm:text-2xl font-bold">{t("exclusive")}</div>
+        <Link href={"/"}>
+          <Image src={logo} alt="logo" className="w-36" priority />
+        </Link>
 
         {/* Start Desktop Nav */}
         <ul className="hidden md:flex justify-center items-center gap-4 lg:gap-7">
