@@ -1,12 +1,11 @@
-import type { Metadata } from "next";
-import { Inter, Cairo } from "next/font/google";
-import "./globals.css";
-import { NextIntlClientProvider } from "next-intl";
-import { getLocale, getMessages } from "next-intl/server";
+import Footer from "@/components/shared/footer";
 import Navbar from "@/components/shared/navbar";
 import { dirHelper } from "@/lib/utils";
-import Footer from "@/components/shared/footer";
-import { Locale } from "@/i18n/config";
+import type { Metadata } from "next";
+import { NextIntlClientProvider } from "next-intl";
+import { getLocale, getMessages } from "next-intl/server";
+import { Cairo, Inter } from "next/font/google";
+import "./globals.css";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -26,7 +25,7 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const locale = (await getLocale()) as Locale;
+  const locale = await getLocale();
   const messages = await getMessages();
 
   return (
