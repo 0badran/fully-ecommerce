@@ -6,6 +6,7 @@ import { getLocale, getMessages } from "next-intl/server";
 import Navbar from "@/components/shared/navbar";
 import { dirHelper } from "@/lib/utils";
 import Footer from "@/components/shared/footer";
+import { Locale } from "@/i18n/config";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -25,7 +26,7 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const locale = await getLocale();
+  const locale = (await getLocale()) as Locale;
   const messages = await getMessages();
 
   return (
