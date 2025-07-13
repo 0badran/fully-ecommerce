@@ -5,6 +5,7 @@ import googlePlay from "public/google-play.png";
 import appStore from "public/app-store.png";
 import { useTranslations } from "next-intl";
 import { Input } from "../ui/input";
+import logo from "public/logo.png";
 import {
   Facebook,
   Instagram,
@@ -21,9 +22,9 @@ export default function Footer() {
       <div className="container grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-7 md:gap-10 lg:gap-16">
         {/* Exclusive */}
         <div className="">
-          <h2 className="text-xl sm:text-2xl font-semibold mb-4">
-            {t("exclusive")}
-          </h2>
+          <Link href={"/"}>
+            <Image src={logo} alt="logo" className="w-36" priority />
+          </Link>
           <h3 className="sm:text-lg font-medium mb-2">{t("subscribe")}</h3>
           <p className="text-xs sm:text-base mb-4">{t("getOffer")}</p>
           <form className="flex items-center border-[1.5px] border-white rounded overflow-hidden">

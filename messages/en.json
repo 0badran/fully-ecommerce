@@ -57,5 +57,9 @@
   "myReviews": "My Reviews",
   "signout": "SignOut",
   "signin": "SignIn",
-  "signup": "SignUp"
+  "signup": "SignUp",
+  "notfound": "404 Not Found",
+  "notfoundDes": "Your visited page not found. You may go home page.",
+  "backHome": "Back to home page",
+  "error404": "404 Error"
 }
