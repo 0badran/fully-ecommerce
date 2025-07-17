@@ -1,16 +1,18 @@
 "use client";
 import { cn } from "@/lib/utils";
-import { Heart, Search, ShoppingCart } from "lucide-react";
+import { Search } from "lucide-react";
 import { useTranslations } from "next-intl";
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import logo from "public/logo.png";
 import { Input } from "../ui/input";
+import CartLink from "./cart-link";
 import LocaleTrigger from "./locale-trigger";
 import NavbarSheet from "./navbar-sheet";
 import ProfileDropdown from "./profile-dropdown";
 import ShopNow from "./shop-now";
-import logo from "public/logo.png";
-import Image from "next/image";
+import WishlistLink from "./wishlist-link";
 const links = [
   { title: "home", href: "/" },
   { title: "contact", href: "/contact" },
@@ -18,7 +20,6 @@ const links = [
 ];
 export default function Navbar() {
   const pathname = usePathname();
-  const isLinkActive = (link: string) => pathname === link;
   const t = useTranslations();
 
   return (
@@ -46,7 +47,7 @@ export default function Navbar() {
               key={item.href}
               className={cn(
                 `hover:underline underline-offset-4`,
-                isLinkActive(item.href) && "underline"
+                pathname === item.href && "underline"
               )}
             >
               <Link href={item.href}>{t(item.title)}</Link>
@@ -64,15 +65,15 @@ export default function Navbar() {
             />
             <Search className="absolute end-3 top-1/2 -translate-y-1/2" />
           </search>
-          <Heart />
-          <ShoppingCart />
+          <WishlistLink />
+          <CartLink />
           <ProfileDropdown />
         </div>
         {/* End Desktop Nav */}
 
         {/* Start Mobile Nav */}
         <div className="block md:hidden">
-          <NavbarSheet links={links} isLinkActive={isLinkActive} />
+          <NavbarSheet links={links} />
         </div>
         {/* End Mobile Nav */}
       </div>

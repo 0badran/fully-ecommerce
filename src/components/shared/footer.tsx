@@ -42,7 +42,7 @@ export default function Footer() {
           </form>
         </div>
         {/* Support */}
-        <div className="space-y-2 text-xs sm:text-base">
+        <div className="space-y-2 max-[355px]:text-[10px] text-xs sm:text-base">
           <h2 className="text-xl sm:text-2xl font-semibold mb-4">
             {t("support")}
           </h2>

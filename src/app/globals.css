@@ -136,3 +136,12 @@
   --color-main-hover: #e07575;
   --color-description: #7d8184;
 }
+
+.PhoneInputInput {
+  outline: none;
+}
+
+.PhoneInputCountryIcon,
+.PhoneInputCountryIcon--border {
+  box-shadow: none;
+}

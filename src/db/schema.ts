@@ -86,3 +86,17 @@ export const favorites = table("favorites", {
   products: jsonb("products").$type<(typeof products.$inferSelect)[]>(),
   ...timestamps,
 });
+
+export const addressBooking = table("address_booking", {
+  id: integer().primaryKey().generatedAlwaysAsIdentity(),
+  name: varchar({ length: 255 }).notNull(),
+  address: varchar().notNull(),
+  city: varchar().notNull(),
+  phone: varchar().notNull(),
+  phone2: varchar(),
+  email: varchar()
+    .notNull()
+    .unique()
+    .references(() => users.email),
+  ...timestamps,
+});
