@@ -6,7 +6,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { Input } from "../ui/input";
 import { Sheet, SheetContent, SheetTrigger } from "../ui/sheet";
-import ProfileDropdown from "./profile-dropdown";
+import UserDropdown from "./user-dropdown";
 import { usePathname } from "next/navigation";
 
 interface Props {
@@ -40,7 +40,7 @@ export default function NavbarSheet({ links }: Props) {
         <div className="flex justify-around items-center gap-4">
           <Heart />
           <ShoppingCart />
-          <ProfileDropdown />
+          <UserDropdown />
         </div>
 
         <search className="relative">

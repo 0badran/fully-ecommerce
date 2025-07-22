@@ -1,11 +1,13 @@
-import NextIntProvider from "@/components/next-int-provider";
-import Footer from "@/components/shared/footer";
-import Navbar from "@/components/shared/navbar";
+import { Toaster } from "@/components/ui/sonner";
+import { dirHelper } from "@/lib/utils";
+import { StackProvider } from "@stackframe/stack";
 import type { Metadata } from "next";
+import { NextIntlClientProvider, useLocale } from "next-intl";
 import { Cairo, Inter } from "next/font/google";
+import "react-phone-number-input/style.css";
+import { stackServerApp } from "../stack";
 import "./globals.css";
-import { Suspense } from "react";
-export const experimental_ppr = true;
+
 const inter = Inter({
   subsets: ["latin"],
 });
@@ -24,24 +26,24 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  // lang={locale} dir={dirHelper(locale)}
+  const locale = useLocale();
+
   return (
-    <html>
+    <html lang={locale} dir={dirHelper(locale)}>
       <body
-      // className={`${
-      //   {
-      //     en: inter.className,
-      //     ar: cairo.className,
-      //   }[locale]
-      // } antialiased`}
+        className={`${
+          {
+            en: inter.className,
+            ar: cairo.className,
+          }[locale]
+        } antialiased`}
       >
-        <Suspense fallback={<div>Loading...</div>}>
-          <NextIntProvider>
-            <Navbar />
+        <StackProvider app={stackServerApp}>
+          <NextIntlClientProvider>
             {children}
-            <Footer />
-          </NextIntProvider>
-        </Suspense>
+            <Toaster richColors />
+          </NextIntlClientProvider>
+        </StackProvider>
       </body>
     </html>
   );

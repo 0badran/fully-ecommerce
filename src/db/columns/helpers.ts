@@ -1,9 +1,9 @@
 import { timestamp } from "drizzle-orm/pg-core";
 
 export const timestamps = {
-  updated_at: timestamp(),
-  created_at: timestamp().defaultNow().notNull(),
-  deleted_at: timestamp(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at"),
+  deletedAt: timestamp("deleted_at"),
 };
 
 export function generateSlug(title: string) {

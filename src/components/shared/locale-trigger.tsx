@@ -1,7 +1,8 @@
 "use client";
-import { useTransition } from "react";
+import { setUserLocale } from "@/cookies";
 import { Locale } from "@/i18n/config";
 import { useLocale } from "next-intl";
+import { useTransition } from "react";
 import {
   Select,
   SelectContent,
@@ -9,9 +10,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
-import { setUserLocale } from "@/cookies";
+import { cn } from "@/lib/utils";
 
-export default function LocaleTrigger() {
+export default function LocaleTrigger({ className }: { className?: string }) {
   const locale = useLocale();
   const [isPending, startTransition] = useTransition();
 
@@ -24,7 +25,12 @@ export default function LocaleTrigger() {
 
   return (
     <Select disabled={isPending} value={locale} onValueChange={onChange}>
-      <SelectTrigger className="w-28 p-0 justify-end rtl:justify-start gap-2 text-white border-0">
+      <SelectTrigger
+        className={cn(
+          "w-28 p-0 justify-end rtl:justify-start gap-2 text-white focus-visible:ring-0 border-0",
+          className
+        )}
+      >
         <SelectValue />
       </SelectTrigger>
       <SelectContent>

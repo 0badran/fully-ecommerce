@@ -5,7 +5,7 @@ import googlePlay from "public/google-play.png";
 import appStore from "public/app-store.png";
 import { useTranslations } from "next-intl";
 import { Input } from "../ui/input";
-import logo from "public/logo.png";
+import logo from "public/logo.svg";
 import {
   Facebook,
   Instagram,

@@ -1,30 +1,36 @@
+import { sql } from "drizzle-orm";
 import {
   boolean,
   date,
   integer,
   jsonb,
   pgEnum,
+  pgSchema,
   real,
+  serial,
   smallint,
-  varchar,
   pgTable as table,
+  text,
+  timestamp,
+  varchar,
 } from "drizzle-orm/pg-core";
 import { timestamps } from "./columns/helpers";
 
-export const rolesEnum = pgEnum("role", ["user", "admin"]);
-
+export const neonAuth = pgSchema("neon_auth");
 export const discountType = pgEnum("discount_type", ["fixed", "percentage"]);
 
-export const users = table("users", {
-  id: integer().primaryKey().generatedAlwaysAsIdentity(),
-  name: varchar({ length: 255 }).notNull(),
-  email: varchar({ length: 255 }).notNull().unique(),
-  hash: varchar().notNull(),
-  phone: varchar({ length: 20 }).unique(),
-  birthdate: date().notNull(),
-  country: varchar({ length: 255 }).notNull(),
-  role: rolesEnum().default("user"),
+export const users = neonAuth.table("users_sync", {
+  rawJson: jsonb("raw_json").notNull(),
+  id: text()
+    .primaryKey()
+    .notNull()
+    .generatedAlwaysAs(sql`(raw_json ->> 'id'::text)`),
+  name: text().generatedAlwaysAs(sql`(raw_json ->> 'display_name'::text)`),
+  email: text().generatedAlwaysAs(sql`(raw_json ->> 'primary_email'::text)`),
   ...timestamps,
+  createdAt: timestamp("created_at").generatedAlwaysAs(
+    sql`to_timestamp((trunc((((raw_json ->> 'signed_up_at_millis'::text))::bigint)::double precision) / (1000)::double precision))`
+  ),
 });
 
 export const products = table("products", {
@@ -71,32 +77,42 @@ export const offers = table("offers", {
 
 export const carts = table("carts", {
   id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
-  userId: integer("user_id")
-    .references(() => users.id)
-    .notNull(),
+  userId: text("user_id").notNull(),
   products: jsonb("products").$type<(typeof products.$inferSelect)[]>(),
   ...timestamps,
 });
 
 export const favorites = table("favorites", {
   id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
-  userId: integer("user_id")
-    .references(() => users.id)
-    .notNull(),
+  userId: text("user_id").notNull(),
   products: jsonb("products").$type<(typeof products.$inferSelect)[]>(),
   ...timestamps,
 });
 
 export const addressBooking = table("address_booking", {
   id: integer().primaryKey().generatedAlwaysAsIdentity(),
-  name: varchar({ length: 255 }).notNull(),
+  name: varchar().notNull(),
+  email: varchar().notNull(),
+  phone: varchar().notNull(),
   address: varchar().notNull(),
   city: varchar().notNull(),
-  phone: varchar().notNull(),
+  userId: text("user_id").notNull().unique(),
   phone2: varchar(),
-  email: varchar()
-    .notNull()
-    .unique()
-    .references(() => users.email),
   ...timestamps,
 });
+
+export const cloudinaryFiles = table("cloudinary_files", {
+  id: serial().primaryKey(),
+  publicId: text("public_id").notNull().unique(),
+  mediaUrl: text("media_url").notNull(),
+  resourceType: text("resource_type").notNull(),
+  userId: text("user_id").notNull(),
+  uploadTimestamp: timestamp("upload_timestamp", {
+    withTimezone: true,
+  }).defaultNow(),
+});
+
+export type AddressBooking = {
+  select: typeof addressBooking.$inferSelect;
+  insert: typeof addressBooking.$inferInsert;
+};

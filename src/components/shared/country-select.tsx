@@ -32,7 +32,9 @@ type Props = {
   className?: string;
   name?: string;
   id?: string;
+  disabled?: boolean;
 };
+
 type CountryCode = (typeof countries)[0];
 
 export default function CountrySelect({
@@ -41,6 +43,7 @@ export default function CountrySelect({
   placeholder,
   className,
   id,
+  disabled,
 }: Props) {
   const [open, setOpen] = React.useState(false);
   const [selectedCountryCode, setSelectedCountryCode] =
@@ -55,6 +58,7 @@ export default function CountrySelect({
           id={id}
           role="combobox"
           aria-expanded={open}
+          disabled={disabled}
           className={cn(
             "w-full font-normal justify-between bg-transparent hover:bg-transparent",
             selectedCountryCode && "indent-10 text-black",
@@ -64,7 +68,7 @@ export default function CountrySelect({
           <span>
             {selectedCountryCode ? labels[selectedCountryCode] : placeholder}
           </span>
-          <ChevronDown size={16} className="opacity-50" />
+          <ChevronDown size={16} className="opacity-50 text-black" />
           {selectedCountryCode && (
             <Image
               src={`https://purecatamphetamine.github.io/country-flag-icons/3x2/${selectedCountryCode}.svg`}
