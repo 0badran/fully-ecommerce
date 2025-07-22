@@ -126,7 +126,7 @@ export default function SignupPage() {
             name="phone"
             required
             value={form.phone}
-            onChange={(value) => updateForm("phone", value?.toString())}
+            onChange={(value) => updateForm("phone", value as string)}
             min={10}
             placeholder={t("phone")}
             className="border-0 border-b-2 rounded-none shadow-none px-3 py-1"

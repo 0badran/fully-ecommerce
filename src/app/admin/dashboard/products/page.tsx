@@ -1,6 +1,3 @@
-import { DataTable } from "@/components/data-table";
-import data from "../data.json";
-
 export default function Products() {
-  return <DataTable data={data} />;
+  return <h1>Products</h1>;
 }
