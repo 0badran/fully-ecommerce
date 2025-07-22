@@ -1,16 +1,20 @@
 "use client";
 import { cn } from "@/lib/utils";
-import { Heart, Search, ShoppingCart } from "lucide-react";
+import { Search } from "lucide-react";
 import { useTranslations } from "next-intl";
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import logo from "public/logo.svg";
 import { Input } from "../ui/input";
+import CartLink from "./cart-link";
 import LocaleTrigger from "./locale-trigger";
 import NavbarSheet from "./navbar-sheet";
-import ProfileDropdown from "./profile-dropdown";
+import UserDropdown from "./user-dropdown";
 import ShopNow from "./shop-now";
-import logo from "public/logo.png";
-import Image from "next/image";
+import WishlistLink from "./wishlist-link";
+import { Suspense } from "react";
+import UserDropdownSkeleton from "../skeleton/user-dropdown-skeleton";
 const links = [
   { title: "home", href: "/" },
   { title: "contact", href: "/contact" },
@@ -18,7 +22,6 @@ const links = [
 ];
 export default function Navbar() {
   const pathname = usePathname();
-  const isLinkActive = (link: string) => pathname === link;
   const t = useTranslations();
 
   return (
@@ -36,7 +39,7 @@ export default function Navbar() {
       </div>
       <div className="container flex justify-between items-center mt-7 lg:mt-12 mb-4">
         <Link href={"/"}>
-          <Image src={logo} alt="logo" className="w-36" priority />
+          <Image src={logo} alt="logo" className="w-32 lg:w-36" priority />
         </Link>
 
         {/* Start Desktop Nav */}
@@ -46,7 +49,7 @@ export default function Navbar() {
               key={item.href}
               className={cn(
                 `hover:underline underline-offset-4`,
-                isLinkActive(item.href) && "underline"
+                pathname === item.href && "underline"
               )}
             >
               <Link href={item.href}>{t(item.title)}</Link>
@@ -60,19 +63,21 @@ export default function Navbar() {
               name="search"
               id="search"
               placeholder={t("searchPlaceholder")}
-              className="h-10 px-4 min-w-[270px] lg:min-w-xs bg-secondary placeholder:text-black/50"
+              className="h-10 px-4 min-w-[250px] lg:min-w-xs bg-secondary placeholder:text-black/50"
             />
             <Search className="absolute end-3 top-1/2 -translate-y-1/2" />
           </search>
-          <Heart />
-          <ShoppingCart />
-          <ProfileDropdown />
+          <WishlistLink />
+          <CartLink />
+          <Suspense fallback={<UserDropdownSkeleton />}>
+            <UserDropdown />
+          </Suspense>
         </div>
         {/* End Desktop Nav */}
 
         {/* Start Mobile Nav */}
         <div className="block md:hidden">
-          <NavbarSheet links={links} isLinkActive={isLinkActive} />
+          <NavbarSheet links={links} />
         </div>
         {/* End Mobile Nav */}
       </div>

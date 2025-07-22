@@ -12,7 +12,7 @@ export default function MainButton({
   return (
     <Button
       className={cn(
-        "bg-main rounded text-white h-[56px] leading-[56px] hover:bg-main-hover",
+        "bg-main rounded text-white hover:bg-main-hover",
         className
       )}
       {...props}

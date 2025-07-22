@@ -6,16 +6,17 @@ import Link from "next/link";
 import { useState } from "react";
 import { Input } from "../ui/input";
 import { Sheet, SheetContent, SheetTrigger } from "../ui/sheet";
-import ProfileDropdown from "./profile-dropdown";
+import UserDropdown from "./user-dropdown";
+import { usePathname } from "next/navigation";
 
 interface Props {
   links: { title: string; href: string }[];
-  isLinkActive: (link: string) => boolean;
 }
 
-export default function NavbarSheet({ links, isLinkActive }: Props) {
+export default function NavbarSheet({ links }: Props) {
   const [open, setOpen] = useState(false);
   const t = useTranslations();
+  const pathname = usePathname();
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
@@ -29,7 +30,7 @@ export default function NavbarSheet({ links, isLinkActive }: Props) {
               key={item.href}
               className={cn(
                 `hover:bg-secondary px-3 py-1 rounded`,
-                isLinkActive(item.href) && "bg-secondary"
+                pathname === item.href && "bg-secondary"
               )}
             >
               <Link href={item.href}>{t(item.title)}</Link>
@@ -39,7 +40,7 @@ export default function NavbarSheet({ links, isLinkActive }: Props) {
         <div className="flex justify-around items-center gap-4">
           <Heart />
           <ShoppingCart />
-          <ProfileDropdown />
+          <UserDropdown />
         </div>
 
         <search className="relative">

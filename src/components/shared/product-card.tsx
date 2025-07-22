@@ -1,11 +1,14 @@
 import { Card } from "@/components/ui/card";
-import { Eye, Heart } from "lucide-react";
+import { Eye, Heart, Trash2 } from "lucide-react";
+import { useTranslations } from "next-intl";
 import Image from "next/image";
 import product from "public/product.png";
 import { Rate } from "./rate";
-import { useTranslations } from "next-intl";
+type Props = {
+  isWishlistCard?: boolean;
+};
 
-export default function ProductCard() {
+export default function ProductCard({ isWishlistCard }: Props) {
   const t = useTranslations();
   return (
     <Card
@@ -28,16 +31,25 @@ export default function ProductCard() {
           alt="product"
         />
         <div aria-label="card actions">
-          <button className="cursor-pointer absolute top-2 end-2 bg-white p-2 rounded-full">
-            <Heart />
-          </button>
-          <button className="cursor-pointer absolute top-14 end-2 bg-white p-2 rounded-full">
-            <Eye />
-          </button>
+          {isWishlistCard ? (
+            <button className="cursor-pointer absolute top-2 end-2 hover:text-main bg-white p-2 rounded-full">
+              <Trash2 />
+            </button>
+          ) : (
+            <>
+              <button className="cursor-pointer absolute top-2 end-2 bg-white p-2 rounded-full">
+                <Heart />
+              </button>
+              <button className="cursor-pointer absolute top-14 end-2 bg-white p-2 rounded-full">
+                <Eye />
+              </button>
+            </>
+          )}
+
           <button className="cursor-pointer w-full transition-transform duration-300 lg:translate-y-full group-hover:translate-y-0 text-white p-3 font-medium bg-black">
             {t("addToCart")}
           </button>
-        </div> 
+        </div>
       </div>
       <div aria-label="card body" className="font-medium">
         <h3>HAVIT HV-G92 Gamepad</h3>

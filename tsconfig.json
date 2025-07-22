@@ -24,11 +24,13 @@
     }
   },
   "include": [
+    "local-env.d.ts",
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    "next.config.ts"
+    "next.config.ts",
+    "src/app/tailwind.plugins.js"
   ],
   "exclude": ["node_modules"]
 }
