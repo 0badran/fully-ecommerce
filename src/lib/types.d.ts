@@ -8,9 +8,9 @@ export type UserTableRow = {
   profilePhoto: string | undefined;
 
   email: string;
-  createdAt: Date | null;
-  updatedAt: Date | null;
-  deletedAt: Date | null;
+  createdAt: string | null;
+  updatedAt: string | null;
+  deletedAt: string | null;
 };
 
 export type UserRaw = {
@@ -46,4 +46,10 @@ export type UserRaw = {
   primary_email_verified: boolean;
   client_read_only_metadata: unknown | null;
   primary_email_auth_enabled: boolean;
+};
+
+export type UserAvatar = {
+  id: string;
+  profileImageUrl: string | null;
+  displayName: string | null;
 };

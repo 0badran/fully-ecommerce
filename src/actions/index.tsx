@@ -11,8 +11,14 @@ import { getTranslations } from "next-intl/server";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
+import { users as usersTable } from "@/db/schema";
+import { UserRaw } from "@/lib/types";
 
-export async function signUp(initialState: any, formData: FormData) {
+export async function signUp(
+  initialState: any,
+  formData: FormData,
+  noRedirect?: boolean
+) {
   const t = await getTranslations();
 
   const schema = z.object({
@@ -55,7 +61,7 @@ export async function signUp(initialState: any, formData: FormData) {
   });
 
   if (res.status === "error") {
-    return { error: res.error.name, success: false };
+    return { error: res.error.errorCode, success: false };
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -70,7 +76,13 @@ export async function signUp(initialState: any, formData: FormData) {
     serverMetadata: { ...reset, birthdate: format(birthdate, "yyyy-MM-dd") },
   });
 
-  redirect("/account?redirect=signup");
+  if (!noRedirect) {
+    redirect("/account?redirect=signup");
+  }
+  return {
+    error: null,
+    success: true,
+  };
 }
 
 export async function signIn(initialState: any, formData: FormData) {
@@ -109,7 +121,7 @@ export async function signIn(initialState: any, formData: FormData) {
   redirect("/account");
 }
 
-export const updateAccount = async (formData: FormData) => {
+export const updateAccount = async (formData: FormData, userId?: string) => {
   const t = await getTranslations();
 
   const schema = z.object({
@@ -125,14 +137,21 @@ export const updateAccount = async (formData: FormData) => {
     phone: formData.get("phone"),
     country: formData.get("country"),
   });
+
   if (validatedFields.error) {
     return {
-      error: validatedFields.error,
+      error: validatedFields.error.issues,
       success: false,
     };
   }
+
+  const user = userId
+    ? await stackServerApp.getUser(userId)
+    : await stackServerApp.getUser({ tokenStore: "nextjs-cookie" });
+
+  if (!user) return { error: "USER_NOT_FOUND", success: false };
+
   const { data } = validatedFields;
-  const user = await stackServerApp.getUser({ or: "redirect" });
   const userMetadata = user.serverMetadata;
   const newData = { ...userMetadata, ...data };
   user.update({
@@ -239,4 +258,44 @@ export async function getUserAddress() {
     .from(addressBooking)
     .where(eq(addressBooking.userId, user.id));
   return address || null;
+}
+
+export async function revalidatePage(route: string, type?: "layout" | "page") {
+  revalidatePath(route, type);
+}
+
+export async function getUsers() {
+  const users = await db.select().from(usersTable);
+
+  if (!users) {
+    return null;
+  }
+
+  return users.map((user) => {
+    const userRaw = user?.rawJson as UserRaw;
+    const userMeta = userRaw?.server_metadata
+      ? {
+          country: (userRaw?.server_metadata?.country as string) || "",
+          phone: (userRaw?.server_metadata?.phone as string) || "",
+          birthdate: (userRaw?.server_metadata?.birthdate as string) || "",
+          status: (userRaw?.primary_email_verified as boolean) || false,
+        }
+      : {
+          country: "",
+          phone: "",
+          status: false,
+          birthdate: "",
+        };
+
+    return {
+      id: user.id,
+      name: user.name as string,
+      profilePhoto: userRaw?.profile_image_url as string | undefined,
+      email: user.email as string,
+      createdAt: user.createdAt,
+      updatedAt: user.updatedAt,
+      deletedAt: user.deletedAt,
+      ...userMeta,
+    };
+  });
 }

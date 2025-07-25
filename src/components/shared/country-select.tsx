@@ -25,6 +25,8 @@ import ar from "react-phone-number-input/locale/ar";
 import en from "react-phone-number-input/locale/en";
 
 const countries = getCountries();
+type CountryCode = (typeof countries)[0];
+
 type Props = {
   value?: string;
   onChange?: (country: string) => void;
@@ -34,8 +36,6 @@ type Props = {
   id?: string;
   disabled?: boolean;
 };
-
-type CountryCode = (typeof countries)[0];
 
 export default function CountrySelect({
   value,
