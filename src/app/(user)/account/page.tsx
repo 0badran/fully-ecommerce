@@ -1,17 +1,15 @@
 "use client";
-import { insertCloudinaryFile, updateAccount } from "@/actions";
+import { updateAccount } from "@/actions";
 import CountrySelect from "@/components/shared/country-select";
+import EditUserAvatar from "@/components/shared/edit-user-avatar";
 import MainButton from "@/components/shared/main-button";
 import RePhoneInput from "@/components/shared/re-phone-input";
 import AccountFormSkeleton from "@/components/skeleton/account-form-skeleton";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useUser } from "@stackframe/stack";
-import { Image as Photo } from "lucide-react";
-import { CldUploadWidget } from "next-cloudinary";
 import { useTranslations } from "next-intl";
 import { useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useState } from "react";
@@ -59,12 +57,18 @@ function UpdateUserDataForm({ t }: { t: (v: string) => string }) {
     country: userMetadata?.country,
   });
 
+  if (!user) return;
+
   async function updateUser(formData: FormData) {
     setPending(true);
-    const state = await updateAccount(formData);
+    const { error } = await updateAccount(formData);
     setPending(false);
-    if (state?.error) {
-      toast.error(state.error.issues?.map((item) => item.message));
+    if (error) {
+      if (Array.isArray(error)) {
+        toast.error(error.map((item) => item.message));
+        return;
+      }
+      toast.error(t("error"));
       return;
     }
     toast(t("userUpdated"));
@@ -88,35 +92,15 @@ function UpdateUserDataForm({ t }: { t: (v: string) => string }) {
         }}
         className="space-y-6"
       >
-        {/* User avatar */}
-        <CldUploadWidget
-          signatureEndpoint={`${process.env.NEXT_PUBLIC_WEBSITE_URL}/api/sign-cloudinary-params`}
-          onSuccess={(result) => {
-            insertCloudinaryFile(result?.info, user!.id);
-            toast.success("updateUserImg");
+        {/* Edit user avatar */}
+        <EditUserAvatar
+          user={{
+            id: user.id,
+            displayName: user.displayName,
+            profileImageUrl: user.profileImageUrl,
           }}
-        >
-          {({ open }) => {
-            return (
-              <div>
-                <Avatar className="size-25 mx-auto">
-                  <AvatarImage src={user!.profileImageUrl!} />
-                  <AvatarFallback>
-                    {user?.displayName?.slice(0, 2)}
-                  </AvatarFallback>
-                </Avatar>
-                <button
-                  type="button"
-                  onClick={() => open()}
-                  className="text-center text-xs cursor-pointer mt-1 mx-auto items-center flex gap-1"
-                >
-                  <Photo size={16} />
-                  {t("uploadImg")}
-                </button>
-              </div>
-            );
-          }}
-        </CldUploadWidget>
+        />
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {/* Name */}
           <div className="space-y-4">

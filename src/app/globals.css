@@ -214,6 +214,11 @@
   height: 150px;
 }
 
+::selection {
+  background: var(--primary);
+  color: var(--primary-foreground);
+}
+
 .loader:before,
 .loader:after {
   content: "";

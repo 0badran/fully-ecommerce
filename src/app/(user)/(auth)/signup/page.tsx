@@ -50,7 +50,7 @@ export default function SignupPage() {
         );
       }
 
-      if (error === "KnownError<USER_EMAIL_ALREADY_EXISTS>") {
+      if (error === "USER_EMAIL_ALREADY_EXISTS") {
         return toast.error(t("userExist"));
       }
       return t("unknownUserError");

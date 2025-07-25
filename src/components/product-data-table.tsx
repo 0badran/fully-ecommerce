@@ -9,6 +9,7 @@ import {
   IconDotsVertical,
   IconLayoutColumns,
   IconTrendingUp,
+  IconUsersGroup,
 } from "@tabler/icons-react";
 import {
   ColumnDef,
@@ -76,8 +77,11 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { UserTableRow } from "@/lib/types";
 import { dirHelper } from "@/lib/utils";
-import { CheckCircle2, XCircle } from "lucide-react";
+import { CheckCircle2, UserCheck, XCircle } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
+import Image from "next/image";
+import ar from "react-phone-number-input/locale/ar";
+import en from "react-phone-number-input/locale/en";
 
 export function UserDataTable({ data: initialData }: { data: UserTableRow[] }) {
   const [data, setData] = React.useState(() => initialData);
@@ -93,7 +97,7 @@ export function UserDataTable({ data: initialData }: { data: UserTableRow[] }) {
     pageSize: 10,
   });
   const locale = useLocale();
-
+  const labels = locale === "ar" ? ar : en;
   const t = useTranslations();
 
   const columns: ColumnDef<UserTableRow>[] = [
@@ -169,13 +173,50 @@ export function UserDataTable({ data: initialData }: { data: UserTableRow[] }) {
       header: () => <div className="w-full">{t("country")}</div>,
       cell: ({ row }) => (
         <div>
-          <span></span>
-          {row.original.country}
+          <Image
+            src={`https://purecatamphetamine.github.io/country-flag-icons/3x2/${row.original.country}.svg`}
+            width={20}
+            height={20}
+            alt={row.original.country}
+            className="aspect-[3/2] inline"
+          />
+          <span className="align-middle ps-1 text-xs">
+            {labels[row.original.country as "EG"]}
+          </span>
         </div>
       ),
     },
     {
       id: "actions",
+      header: ({ table }) => {
+        const selectedRow = table.getFilteredSelectedRowModel().rows;
+
+        if (!selectedRow.length) {
+          return null;
+        }
+
+        return (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="ghost"
+                className="data-[state=open]:bg-muted text-muted-foreground flex size-8"
+                size="icon"
+              >
+                <IconDotsVertical />
+                <span className="sr-only">{t("openMenu")}</span>
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-32">
+              <DropdownMenuItem>{t("sendMessage")}</DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem variant="destructive">
+                {t("delete")}
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        );
+      },
       cell: () => (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -191,6 +232,7 @@ export function UserDataTable({ data: initialData }: { data: UserTableRow[] }) {
           <DropdownMenuContent align="end" className="w-32">
             <DropdownMenuItem>{t("view")}</DropdownMenuItem>
             <DropdownMenuItem>{t("edit")}</DropdownMenuItem>
+            <DropdownMenuItem>{t("sendMessage")}</DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem variant="destructive">
               {t("delete")}
@@ -226,8 +268,6 @@ export function UserDataTable({ data: initialData }: { data: UserTableRow[] }) {
     getFacetedUniqueValues: getFacetedUniqueValues(),
   });
 
-  const activeUsers = data.filter((user) => user.status);
-
   return (
     <Tabs
       defaultValue="allUser"
@@ -235,9 +275,18 @@ export function UserDataTable({ data: initialData }: { data: UserTableRow[] }) {
       dir={dirHelper(locale)}
     >
       <div className="flex items-center justify-between">
-        <TabsList className="**:data-[slot=badge]:bg-muted-foreground/30 hidden **:data-[slot=badge]:size-5 **:data-[slot=badge]:rounded-full **:data-[slot=badge]:px-1 @4xl/main:flex">
-          <TabsTrigger value="allUser">{t("allUser")}</TabsTrigger>
-          <TabsTrigger value="activeUsers">{t("activeUsers")}</TabsTrigger>
+        <TabsList className="**:data-[slot=badge]:bg-muted-foreground/30 **:data-[slot=badge]:size-5 **:data-[slot=badge]:rounded-full **:data-[slot=badge]:px-1 @4xl/main:flex">
+          <TabsTrigger value="allUser" onClick={() => setData(initialData)}>
+            <span className="block max-[500px]:hidden">{t("allUser")}</span>
+            <IconUsersGroup className="block min-[500px]:hidden" />
+          </TabsTrigger>
+          <TabsTrigger
+            value="activeUsers"
+            onClick={() => setData(data.filter((user) => user.status))}
+          >
+            <span className="block max-[500px]:hidden">{t("activeUsers")}</span>
+            <UserCheck className="block min-[500px]:hidden" />
+          </TabsTrigger>
         </TabsList>
 
         <div className="flex items-center gap-2">
@@ -376,7 +425,7 @@ export function UserDataTable({ data: initialData }: { data: UserTableRow[] }) {
                 disabled={!table.getCanPreviousPage()}
               >
                 <span className="sr-only">{t("goToFirstPage")}</span>
-                <IconChevronsLeft />
+                <IconChevronsLeft className="rtl:rotate-180" />
               </Button>
               <Button
                 variant="outline"
@@ -386,7 +435,7 @@ export function UserDataTable({ data: initialData }: { data: UserTableRow[] }) {
                 disabled={!table.getCanPreviousPage()}
               >
                 <span className="sr-only">{t("goToPreviousPage")}</span>
-                <IconChevronLeft />
+                <IconChevronLeft className="rtl:rotate-180" />
               </Button>
               <Button
                 variant="outline"
@@ -396,7 +445,7 @@ export function UserDataTable({ data: initialData }: { data: UserTableRow[] }) {
                 disabled={!table.getCanNextPage()}
               >
                 <span className="sr-only">{t("goToNextPage")}</span>
-                <IconChevronRight />
+                <IconChevronRight className="rtl:rotate-180" />
               </Button>
               <Button
                 variant="outline"
@@ -406,7 +455,7 @@ export function UserDataTable({ data: initialData }: { data: UserTableRow[] }) {
                 disabled={!table.getCanNextPage()}
               >
                 <span className="sr-only">{t("goToLastPage")}</span>
-                <IconChevronsRight />
+                <IconChevronsRight className="rtl:rotate-180" />
               </Button>
             </div>
           </div>
@@ -424,7 +473,7 @@ export function UserDataTable({ data: initialData }: { data: UserTableRow[] }) {
                 <TableRow key={headerGroup.id}>
                   {headerGroup.headers.map((header) => {
                     return (
-                      <TableHead key={header.id}>
+                      <TableHead key={header.id} className="text-start">
                         {header.isPlaceholder
                           ? null
                           : flexRender(
@@ -439,34 +488,29 @@ export function UserDataTable({ data: initialData }: { data: UserTableRow[] }) {
             </TableHeader>
 
             <TableBody className="**:data-[slot=table-cell]:first:w-8">
-              {activeUsers.length ? (
-                activeUsers.map((rowData) => {
-                  const row = table
-                    .getRowModel()
-                    .rows.find((r) => r.original.id === rowData.id);
-                  return row ? (
-                    <TableRow
-                      key={row.id}
-                      data-state={row.getIsSelected() && "selected"}
-                    >
-                      {row.getVisibleCells().map((cell) => (
-                        <TableCell key={cell.id}>
-                          {flexRender(
-                            cell.column.columnDef.cell,
-                            cell.getContext()
-                          )}
-                        </TableCell>
-                      ))}
-                    </TableRow>
-                  ) : null;
-                })
+              {table.getRowModel().rows?.length ? (
+                table.getRowModel().rows.map((row) => (
+                  <TableRow
+                    key={row.id}
+                    data-state={row.getIsSelected() && "selected"}
+                  >
+                    {row.getVisibleCells().map((cell) => (
+                      <TableCell key={cell.id}>
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext()
+                        )}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                ))
               ) : (
                 <TableRow>
                   <TableCell
                     colSpan={columns.length}
                     className="h-24 text-center"
                   >
-                    {t("noActiveUsers")}
+                    {t("noResults")}
                   </TableCell>
                 </TableRow>
               )}
@@ -516,7 +560,7 @@ export function UserDataTable({ data: initialData }: { data: UserTableRow[] }) {
                 disabled={!table.getCanPreviousPage()}
               >
                 <span className="sr-only">{t("goToFirstPage")}</span>
-                <IconChevronsLeft />
+                <IconChevronsLeft className="rtl:rotate-180" />
               </Button>
               <Button
                 variant="outline"
@@ -526,7 +570,7 @@ export function UserDataTable({ data: initialData }: { data: UserTableRow[] }) {
                 disabled={!table.getCanPreviousPage()}
               >
                 <span className="sr-only">{t("goToPreviousPage")}</span>
-                <IconChevronLeft />
+                <IconChevronLeft className="rtl:rotate-180" />
               </Button>
               <Button
                 variant="outline"
@@ -536,7 +580,7 @@ export function UserDataTable({ data: initialData }: { data: UserTableRow[] }) {
                 disabled={!table.getCanNextPage()}
               >
                 <span className="sr-only">{t("goToNextPage")}</span>
-                <IconChevronRight />
+                <IconChevronRight className="rtl:rotate-180" />
               </Button>
               <Button
                 variant="outline"
@@ -546,7 +590,7 @@ export function UserDataTable({ data: initialData }: { data: UserTableRow[] }) {
                 disabled={!table.getCanNextPage()}
               >
                 <span className="sr-only">{t("goToLastPage")}</span>
-                <IconChevronsRight />
+                <IconChevronsRight className="rtl:rotate-180" />
               </Button>
             </div>
           </div>

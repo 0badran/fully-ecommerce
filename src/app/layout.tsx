@@ -7,6 +7,7 @@ import { Cairo, Inter } from "next/font/google";
 import "react-phone-number-input/style.css";
 import { stackServerApp } from "../stack";
 import "./globals.css";
+import QueryProvider from "@/components/query-provider";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -40,7 +41,7 @@ export default function RootLayout({
       >
         <StackProvider app={stackServerApp}>
           <NextIntlClientProvider>
-            {children}
+            <QueryProvider>{children}</QueryProvider>
             <Toaster richColors />
           </NextIntlClientProvider>
         </StackProvider>

@@ -1,11 +1,5 @@
-import { UserDataTable } from "@/components/user-data-table";
-import { getUsers } from "@/services";
+import { UsersTable } from "@/components/dashboard/users-table";
 
 export default async function UsersPage() {
-  const users = await getUsers();
-
-  if (!users) {
-    return;
-  }
-  return <UserDataTable data={users} />;
+  return <UsersTable />;
 }

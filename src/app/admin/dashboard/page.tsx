@@ -6,7 +6,6 @@ export default function Page() {
     <div className="flex flex-col gap-4 md:gap-6">
       <SectionCards />
       <ChartAreaInteractive />
-      {/* <DataTable data={data} /> */}
     </div>
   );
 }
