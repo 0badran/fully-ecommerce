@@ -1,4 +1,6 @@
-export type UserTableRow = {
+import { addressBooking } from "@/db/schema";
+
+export interface UserSelect {
   country: string;
   phone: string;
   birthdate: string;
@@ -6,14 +8,13 @@ export type UserTableRow = {
   id: string;
   name: string;
   profilePhoto: string | undefined;
-
   email: string;
   createdAt: string | null;
   updatedAt: string | null;
   deletedAt: string | null;
-};
+}
 
-export type UserRaw = {
+export interface UserRaw {
   id: string;
   display_name: string;
   has_password: boolean;
@@ -46,10 +47,25 @@ export type UserRaw = {
   primary_email_verified: boolean;
   client_read_only_metadata: unknown | null;
   primary_email_auth_enabled: boolean;
-};
+}
 
 export type UserAvatar = {
   id: string;
   profileImageUrl: string | null;
   displayName: string | null;
+};
+
+export type SendMessageTarget = {
+  emails: string[];
+  names: string[];
+};
+
+export type UsersDeletedTarget = {
+  ids: string[];
+  names: string[];
+};
+
+export type AddressBooking = {
+  select: typeof addressBooking.$inferSelect;
+  insert: typeof addressBooking.$inferInsert;
 };

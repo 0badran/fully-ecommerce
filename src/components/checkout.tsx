@@ -5,7 +5,7 @@ import MainButton from "@/components/shared/main-button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { AddressBooking } from "@/db/schema";
+import { AddressBooking } from "@/types/user";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import product from "public/product.png";
