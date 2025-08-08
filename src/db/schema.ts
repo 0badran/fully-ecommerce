@@ -9,10 +9,10 @@ import {
   pgSchema,
   real,
   serial,
-  smallint,
   pgTable as table,
   text,
   timestamp,
+  uuid,
   varchar,
 } from "drizzle-orm/pg-core";
 import { timestamps } from "./columns/helpers";
@@ -48,29 +48,29 @@ export const users = neonAuth.table(
 );
 
 export const products = table("products", {
-  id: integer().primaryKey().generatedAlwaysAsIdentity(),
-  categoryId: integer("category_id")
+  id: serial().primaryKey(),
+  categoryId: uuid("category_id")
     .references(() => categories.id)
     .notNull(),
   title: varchar({ length: 255 }).notNull().unique(),
   slug: varchar().notNull().unique(),
-  price: smallint(),
+  price: real().notNull(),
   discount: real(),
   discountType: discountType(),
   rating: real(),
-  thumbnail: varchar().notNull(),
+  thumbnail: varchar(),
   gallery: varchar().array(),
   colors: varchar().array(),
   sizes: varchar().array(),
-  description: varchar(),
-  stock: integer(),
+  description: varchar().notNull(),
+  stock: integer().notNull(),
   isCartItem: boolean("is_cart_item").default(false),
   isFavoriteItem: boolean("is_favorite_item").default(false),
   ...timestamps,
 });
 
 export const categories = table("categories", {
-  id: integer().primaryKey().generatedAlwaysAsIdentity(),
+  id: serial().primaryKey(),
   title: varchar({ length: 255 }).notNull().unique(),
   slug: varchar().notNull().unique(),
   thumbnail: varchar(),
@@ -78,7 +78,7 @@ export const categories = table("categories", {
 });
 
 export const offers = table("offers", {
-  id: integer().primaryKey().generatedAlwaysAsIdentity(),
+  id: serial().primaryKey(),
   title: varchar({ length: 255 }).notNull().unique(),
   slug: varchar().notNull().unique(),
   discount: real(),
@@ -90,21 +90,21 @@ export const offers = table("offers", {
 });
 
 export const carts = table("carts", {
-  id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
+  id: serial().primaryKey(),
   userId: text("user_id").notNull(),
   products: jsonb("products").$type<(typeof products.$inferSelect)[]>(),
   ...timestamps,
 });
 
 export const favorites = table("favorites", {
-  id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
+  id: serial("id").primaryKey(),
   userId: text("user_id").notNull(),
   products: jsonb("products").$type<(typeof products.$inferSelect)[]>(),
   ...timestamps,
 });
 
 export const addressBooking = table("address_booking", {
-  id: integer().primaryKey().generatedAlwaysAsIdentity(),
+  id: serial().primaryKey(),
   name: varchar().notNull(),
   email: varchar().notNull(),
   phone: varchar().notNull(),
@@ -125,8 +125,3 @@ export const cloudinaryFiles = table("cloudinary_files", {
     withTimezone: true,
   }).defaultNow(),
 });
-
-export type AddressBooking = {
-  select: typeof addressBooking.$inferSelect;
-  insert: typeof addressBooking.$inferInsert;
-};

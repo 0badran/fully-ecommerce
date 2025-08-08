@@ -12,26 +12,36 @@ import { Calendar } from "../ui/calendar";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/select";
+import { Textarea } from "../ui/textarea";
 import CountrySelect from "./country-select";
 import RePhoneInput from "./re-phone-input";
 
 type FormSchema = Record<string, any>;
 
-type FormField = {
+export interface FieldConfig {
   label: string;
   name: string;
   value?: string;
   type?: HTMLInputTypeAttribute;
+  options?: { title: string; value: string }[];
   placeholder?: string;
   required?: boolean;
   disabled?: boolean;
   className?: string;
   render?: () => React.ReactNode;
-};
+  parentClassName?: string;
+}
 
 interface ReusableFormProps {
   formAction: (formData: FormData) => void;
-  formFields: FormField[];
+  formFields: FieldConfig[];
   renderButton?: React.ReactNode;
   className?: string;
   clearForm?: boolean;
@@ -79,7 +89,8 @@ export default function ReusableForm({
     disabled,
     required,
     render,
-  }: FormField) {
+    options,
+  }: FieldConfig) {
     if (render) {
       return render();
     }
@@ -118,6 +129,31 @@ export default function ReusableForm({
             placeholder={placeholder}
           />
         );
+      case "select":
+        if (options) {
+          return (
+            <Select
+              value={formSchema[name]}
+              onValueChange={(v) => updateFormSchema(name, v)}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder={placeholder} />
+              </SelectTrigger>
+              <SelectContent>
+                {options.map(({ title, value }) => (
+                  <SelectItem key={value} value={value}>
+                    {title}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          );
+        }
+        return (
+          <p className="text-destructive">
+            You must pass options field to config
+          </p>
+        );
       case "birthdate":
         return (
           <Popover>
@@ -150,6 +186,22 @@ export default function ReusableForm({
             </PopoverContent>
           </Popover>
         );
+      case "message":
+        return (
+          <Textarea
+            id={name}
+            name={name}
+            disabled={disabled}
+            required={required}
+            className={cn(
+              "w-full border border-black md:h-14 px-3 rounded-sm focus-visible:ring-0",
+              formSchema[name] && "border-main",
+              className
+            )}
+            value={formSchema[name]}
+            onChange={(e) => updateFormSchema(name, e.target.value)}
+          />
+        );
       default:
         return (
           <Input
@@ -180,7 +232,10 @@ export default function ReusableForm({
       className={cn("space-y-5", className)}
     >
       {formFields.map((input) => (
-        <div key={input.name} className="space-y-4">
+        <div
+          key={input.name}
+          className={cn("space-y-4", input.parentClassName)}
+        >
           <Label htmlFor={input.name}>{input.label}</Label>
           {renderField(input)}
         </div>

@@ -45,7 +45,7 @@ export default function AccountPage() {
 
 function UpdateUserDataForm({ t }: { t: (v: string) => string }) {
   const user = useUser();
-  const userMetadata = user?.clientMetadata as UserMetadata;
+  const userMetadata = user?.clientMetadata;
   const [viewMode, setViewMode] = useState(true);
   const [pending, setPending] = useState(false);
   const [passwordPending, setPasswordPending] = useState(false);

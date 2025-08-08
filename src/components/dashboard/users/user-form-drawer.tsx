@@ -1,6 +1,8 @@
 "use client";
 
 import { signUp, updateAccount } from "@/actions";
+import MainButton from "@/components/shared/main-button";
+import ReusableForm from "@/components/shared/reusable-form";
 import { Button } from "@/components/ui/button";
 import {
   Drawer,
@@ -11,16 +13,12 @@ import {
   DrawerTitle,
 } from "@/components/ui/drawer";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { UserTableRow } from "@/lib/types";
+import { UserSelect } from "@/types/user";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
-import MainButton from "../shared/main-button";
-import ReusableForm from "../shared/reusable-form";
 
-type UserFormProps =
-  | { mode: "update"; user: UserTableRow }
-  | { mode: "create" };
+type UserFormProps = { mode: "update"; user: UserSelect } | { mode: "create" };
 type OpenMethod = {
   openDrawer: boolean;
   setOpenDrawer: (v: boolean) => void;

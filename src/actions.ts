@@ -1,18 +1,25 @@
 "use server";
 
 import { db } from "@/db/connection";
-import { cloudinaryFiles, addressBooking } from "@/db/schema";
+import { addressBooking, categories, products } from "@/db/schema";
 import { stackServerApp } from "@/stack";
-import { UploadApiResponse } from "cloudinary";
 import { format } from "date-fns";
 import { eq } from "drizzle-orm";
-import { CloudinaryUploadWidgetInfo } from "next-cloudinary";
 import { getTranslations } from "next-intl/server";
-import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
-import { users as usersTable } from "@/db/schema";
-import { UserRaw } from "@/lib/types";
+import { generateSlug } from "./db/columns/helpers";
+
+function handleErrors(error: unknown) {
+  if (error instanceof z.ZodError) {
+    return { error: error.issues, success: false };
+  }
+
+  if (error instanceof Error) {
+    return { error: error.message, success: false };
+  }
+  return { error: "Something went wrong", success: false };
+}
 
 export async function signUp(
   initialState: any,
@@ -165,25 +172,6 @@ export const updateAccount = async (formData: FormData, userId?: string) => {
   };
 };
 
-export async function insertCloudinaryFile(info: any, userId: string) {
-  const { public_id, secure_url, resource_type } = info as UploadApiResponse &
-    CloudinaryUploadWidgetInfo;
-
-  const [user] = await Promise.all([
-    stackServerApp.getUser(),
-    db.insert(cloudinaryFiles).values({
-      publicId: public_id,
-      mediaUrl: secure_url,
-      resourceType: resource_type,
-      userId: userId,
-    }),
-  ]);
-  if (user) {
-    user.update({ profileImageUrl: secure_url });
-    revalidatePath("/account", "layout");
-  }
-}
-
 export async function saveAddress(formData: FormData) {
   const t = await getTranslations();
 
@@ -250,52 +238,142 @@ export async function saveAddress(formData: FormData) {
   return { error: null, success: true };
 }
 
-export async function getUserAddress() {
-  const user = await stackServerApp.getUser();
-  if (!user) return null;
-  const [address] = await db
-    .select()
-    .from(addressBooking)
-    .where(eq(addressBooking.userId, user.id));
-  return address || null;
-}
-
-export async function revalidatePage(route: string, type?: "layout" | "page") {
-  revalidatePath(route, type);
-}
-
-export async function getUsers() {
-  const users = await db.select().from(usersTable);
-
-  if (!users) {
-    return null;
-  }
-
-  return users.map((user) => {
-    const userRaw = user?.rawJson as UserRaw;
-    const userMeta = userRaw?.server_metadata
-      ? {
-          country: (userRaw?.server_metadata?.country as string) || "",
-          phone: (userRaw?.server_metadata?.phone as string) || "",
-          birthdate: (userRaw?.server_metadata?.birthdate as string) || "",
-          status: (userRaw?.primary_email_verified as boolean) || false,
-        }
-      : {
-          country: "",
-          phone: "",
-          status: false,
-          birthdate: "",
-        };
-
-    return {
-      id: user.id,
-      name: user.name as string,
-      profilePhoto: userRaw?.profile_image_url as string | undefined,
-      email: user.email as string,
-      createdAt: user.createdAt,
-      updatedAt: user.updatedAt,
-      deletedAt: user.deletedAt,
-      ...userMeta,
-    };
+export async function createProduct(product: FormData) {
+  const schema = z.object({
+    categoryId: z.coerce.string(),
+    title: z.string().min(1).max(255),
+    price: z.coerce.number().nonnegative(),
+    discount: z.coerce.number().nonnegative().optional(),
+    discountType: z.enum(["percentage", "fixed"]).optional(),
+    thumbnail: z.string().min(1),
+    // gallery: z.array(z.string()).optional(),
+    // colors: z.array(z.string()).optional(),
+    // sizes: z.array(z.string()).optional(),
+    description: z.string().min(10),
+    stock: z.coerce.number().int().nonnegative(),
   });
+  const data = {
+    categoryId: product.get("categoryId"),
+    title: product.get("title"),
+    price: product.get("price"),
+    discount: product.get("discount"),
+    description: product.get("description"),
+    discountType: product.get("discountType"),
+    thumbnail: product.get("thumbnail"),
+    stock: product.get("stock"),
+  };
+
+  try {
+    schema.parse(data);
+    // Safe parse for type conversion
+    const result = schema.safeParse(data);
+    if (result.success) {
+      await db.insert(products).values({
+        ...result.data,
+        slug: generateSlug(product.get("title") as string),
+      });
+    }
+
+    return { error: null, success: true };
+  } catch (e) {
+    return handleErrors(e);
+  }
+}
+
+export async function updateProduct(formData: FormData, id: number) {
+  const schema = z.object({
+    categoryId: z.coerce.string(),
+    title: z.string().min(1).max(255),
+    price: z.coerce.number().nonnegative(),
+    discount: z.coerce.number().nonnegative().optional(),
+    discountType: z.enum(["percentage", "fixed"]).optional(),
+    thumbnail: z.string().min(1),
+    description: z.string().min(10),
+    stock: z.coerce.number().int().nonnegative(),
+  });
+
+  const data = {
+    categoryId: formData.get("categoryId"),
+    title: formData.get("title"),
+    price: formData.get("price"),
+    discount: formData.get("discount"),
+    discountType: formData.get("discountType"),
+    thumbnail: formData.get("thumbnail"),
+    description: formData.get("description"),
+    stock: formData.get("stock"),
+  };
+
+  try {
+    schema.parse(data);
+    const result = schema.safeParse(data);
+
+    if (!result.success) {
+      return;
+    }
+
+    await db
+      .update(products)
+      .set({
+        ...result.data,
+        slug: generateSlug(formData.get("title") as string),
+      })
+      .where(eq(products.id, id));
+
+    return { error: null, success: true };
+  } catch (e) {
+    return handleErrors(e);
+  }
+}
+
+export async function createCategory(formData: FormData) {
+  const schema = z.object({
+    title: z.string().min(1).max(255),
+    thumbnail: z.string().optional(),
+  });
+
+  const data = {
+    title: formData.get("title") + "",
+    thumbnail: formData.get("thumbnail") + "",
+  };
+
+  try {
+    schema.parse(data);
+
+    await db.insert(categories).values({
+      ...data,
+      slug: generateSlug(data.title),
+    });
+
+    return { error: null, success: true };
+  } catch (e) {
+    return handleErrors(e);
+  }
+}
+
+export async function updateCategory(formData: FormData, id: number) {
+  const schema = z.object({
+    title: z.string().min(1).max(255),
+    thumbnail: z.string().optional(),
+  });
+
+  const data = {
+    title: formData.get("title") + "",
+    thumbnail: formData.get("thumbnail") + "",
+  };
+
+  try {
+    schema.parse(data);
+
+    await db
+      .update(categories)
+      .set({
+        ...data,
+        slug: generateSlug(data.title),
+      })
+      .where(eq(categories.id, id));
+
+    return { error: null, success: true };
+  } catch (e) {
+    return handleErrors(e);
+  }
 }

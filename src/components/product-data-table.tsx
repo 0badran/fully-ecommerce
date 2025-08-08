@@ -75,7 +75,7 @@ import {
 } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { UserTableRow } from "@/lib/types";
+import { UserSelect } from "@/types/user";
 import { dirHelper } from "@/lib/utils";
 import { CheckCircle2, UserCheck, XCircle } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
@@ -83,7 +83,7 @@ import Image from "next/image";
 import ar from "react-phone-number-input/locale/ar";
 import en from "react-phone-number-input/locale/en";
 
-export function UserDataTable({ data: initialData }: { data: UserTableRow[] }) {
+export function UserDataTable({ data: initialData }: { data: UserSelect[] }) {
   const [data, setData] = React.useState(() => initialData);
   const [rowSelection, setRowSelection] = React.useState({});
   const [columnVisibility, setColumnVisibility] =
@@ -100,7 +100,7 @@ export function UserDataTable({ data: initialData }: { data: UserTableRow[] }) {
   const labels = locale === "ar" ? ar : en;
   const t = useTranslations();
 
-  const columns: ColumnDef<UserTableRow>[] = [
+  const columns: ColumnDef<UserSelect>[] = [
     {
       id: "select",
       header: ({ table }) => (
@@ -620,7 +620,7 @@ const chartConfig = {
   },
 } satisfies ChartConfig;
 
-function TableCellViewer({ item }: { item: UserTableRow }) {
+function TableCellViewer({ item }: { item: UserSelect }) {
   const isMobile = useIsMobile();
 
   return (
