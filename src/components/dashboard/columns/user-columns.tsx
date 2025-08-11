@@ -121,7 +121,7 @@ export default function createUserColumns(
     {
       id: "actions",
       header: ({ table }) => {
-        const selectedRows = table.getFilteredSelectedRowModel().rows;
+        const selectedRows = table.getFilteredSelectedRowModel()?.rows || [];
         if (!selectedRows.length) {
           return null;
         }

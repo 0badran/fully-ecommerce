@@ -55,7 +55,7 @@ export default function createProductsColumns(
       enableHiding: false,
     },
     {
-      accessorKey: "header",
+      accessorKey: t("header"),
       header: t("header"),
       cell: ({ row }) => {
         return (
@@ -73,13 +73,13 @@ export default function createProductsColumns(
       enableHiding: false,
     },
     {
-      accessorKey: "price",
+      accessorKey: t("price"),
       header: t("price"),
       cell: ({ row }) => row.original.price,
     },
     {
-      accessorKey: "stock",
-      header: () => <div className="w-full">{t("stock")}</div>,
+      accessorKey: t("stock"),
+      header: t("stock"),
       cell: ({ row }) => (
         <Badge
           variant={(row.original.stock || 0) > 5 ? "outline" : "destructive"}
@@ -90,12 +90,12 @@ export default function createProductsColumns(
       ),
     },
     {
-      accessorKey: "rating",
-      header: () => <div className="w-full">{t("rating")}</div>,
+      accessorKey: t("rating"),
+      header: t("rating"),
       cell: ({ row }) => row.original.rating || "-",
     },
     {
-      accessorKey: "category type",
+      accessorKey: t("categoryType"),
       header: t("categoryType"),
       cell: ({ row }) => row.original.categoryId,
     },

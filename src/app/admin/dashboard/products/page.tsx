@@ -51,7 +51,7 @@ export default function ProductTablePage() {
   }
 
   if (error) {
-    throw new Error("Products not found", { cause: "PRODUCT_NOT_FOUND" });
+    throw new Error(t("error"), { cause: error.cause });
   }
 
   const productsTabs = [

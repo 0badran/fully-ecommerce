@@ -6,14 +6,13 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { UserSelect } from "@/types/user";
 import { IconChevronDown, IconLayoutColumns } from "@tabler/icons-react";
 import { Table } from "@tanstack/react-table";
 import { useTranslations } from "next-intl";
 import { ElementType } from "react";
 
-export interface UsersTableHeaderProps {
-  table: Table<UserSelect>;
+export interface TableFilterProps {
+  table: Table<any>;
   tabs: Array<{
     value: string;
     onAction: () => void;
@@ -21,7 +20,7 @@ export interface UsersTableHeaderProps {
   }>;
 }
 
-export function TableFilter({ table, tabs }: UsersTableHeaderProps) {
+export function TableFilter({ table, tabs }: TableFilterProps) {
   const t = useTranslations();
   return (
     <div className="flex items-center justify-between">
@@ -61,7 +60,7 @@ export function TableFilter({ table, tabs }: UsersTableHeaderProps) {
                       column.toggleVisibility(!!value)
                     }
                   >
-                    {t(column.id)}
+                    {column.id}
                   </DropdownMenuCheckboxItem>
                 );
               })}

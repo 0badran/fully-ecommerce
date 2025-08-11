@@ -7,5 +7,5 @@ export default function useUsers() {
     queryFn: () => getUsers(),
   });
 
-  return { users: data || null, isLoading, error };
+  return { users: data || [], isLoading, error };
 }

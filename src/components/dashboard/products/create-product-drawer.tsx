@@ -1,6 +1,7 @@
 "use client";
 
 import { createProduct } from "@/actions";
+import AlertCard from "@/components/shared/alert-card";
 import MainButton from "@/components/shared/main-button";
 import ReusableForm, { FieldConfig } from "@/components/shared/reusable-form";
 import { Button } from "@/components/ui/button";
@@ -59,10 +60,16 @@ export default function CreateProductDrawer({
 
   const fieldsCreate: FieldConfig[] = [
     { name: "title", label: t("title") },
-    { name: "price", label: t("price") },
+    { name: "price", label: t("price"), type: "number" },
+    {
+      name: "description",
+      label: t("description"),
+      type: "textarea",
+    },
+    { name: "stock", label: t("stock"), type: "number" },
     {
       name: "categoryId",
-      label: t("categoryId"),
+      label: t("category"),
       type: "select",
       options: [{ title: "", value: "" }],
     },
@@ -76,14 +83,6 @@ export default function CreateProductDrawer({
       type: "select",
       options: [{ title: "", value: "" }],
     },
-    { name: "thumbnail", label: t("thumbnail"), type: "file" },
-    { name: "gallery", label: t("gallery"), type: "files" },
-    {
-      name: "description",
-      label: t("description"),
-      type: "textarea",
-    },
-    { name: "stock", label: t("stock") },
   ];
 
   return (
@@ -94,6 +93,7 @@ export default function CreateProductDrawer({
     >
       <DrawerContent>
         <DrawerHeader>
+          <AlertCard title={t("photoCreateAlert")} />
           <DrawerTitle>{t("createNew")}</DrawerTitle>
           <DrawerDescription>{t("enterDetails")}</DrawerDescription>
         </DrawerHeader>

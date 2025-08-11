@@ -194,5 +194,13 @@
   "deleteProductTitle": "Confirm product deletion",
   "deleteCategoryTitle": "Confirm category deletion",
   "deleteCategoriesConfirm": "Are you sure you want to delete {count} categories?",
-  "deleted": "Deleted has been successfully"
+  "deleted": "Deleted has been successfully",
+  "price": "Price",
+  "categoryType": "Category Type",
+  "createProduct": "Create Product",
+  "allProducts": "All Products",
+  "rating": "Rating",
+  "photoCreateAlert": "You can add photo after created",
+  "category": "Category",
+  "title": "Title"
 }

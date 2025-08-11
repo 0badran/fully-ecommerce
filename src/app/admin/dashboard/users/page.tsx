@@ -64,8 +64,8 @@ export default function UserTablePage() {
     return;
   }
 
-  if (!users || error) {
-    throw new Error(t("error"));
+  if (error) {
+    throw new Error(t("error"), { cause: error.cause });
   }
 
   const usersTabs = [
