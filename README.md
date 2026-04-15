@@ -1,6 +1,6 @@
 # E-Commerce APP
 
-## A fully e-commerce project contain a dashboard for admins, users profile, shopping cart and more...
+## A fully e-commerce project contain a dashboard for admins, users profile, shopping cart.
 
 ### Features:
 
