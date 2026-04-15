@@ -7,8 +7,6 @@
 - Admin dashboard
 - User profile
 - Shopping Cart
-- Favorite List
-- Payment way
 
 ### Technologies
 
